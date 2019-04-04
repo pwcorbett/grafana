@@ -22,6 +22,7 @@ type SocialGenericOAuth struct {
 	allowSignup          bool
 	emailAttributeName   string
 	emailAttributePath   string
+	emailRequired        bool
 	teamIds              []int
 }
 
@@ -231,7 +232,7 @@ func (s *SocialGenericOAuth) UserInfo(client *http.Client, token *oauth2.Token) 
 	name := s.extractName(&data)
 
 	email := s.extractEmail(&data, rawUserInfoResponse.Body)
-	if email == "" {
+	if email == "" && s.emailRequired {
 		email, err = s.FetchPrivateEmail(client)
 		if err != nil {
 			return nil, err
